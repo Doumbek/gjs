@@ -1,0 +1,101 @@
+apply plugin: 'application'
+mainClassName = 'com.gjs.mGradle.App'
+
+project.ext.projectCustomFirst = 'First custom'
+def customVariable = 'HelloWorld'
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+    }
+    test {
+        java {
+            srcDir 'src/test/java'
+        }
+    }
+}
+
+project.task("task1")
+task("task2")
+task "task3"
+task task4
+
+task1.description = "Task 1 description"
+task1.doFirst { println "task1 doFirst" }
+task1.doLast { println "task1 doLast" }
+task1.dependsOn task2
+
+task2.description = "Task 2 description"
+task2.doFirst { println "task2 doFirst" }
+task2.doLast { println "task2 doLast" }
+task2.shouldRunAfter task3
+
+task3.description = "Task 3 description"
+task3.doFirst { println "task3 doFirst" }
+task3.doLast { println "task3 doLast" }
+task3.mustRunAfter task4
+
+task4.description = "Task 4 description"
+task4.doFirst { println "task4 doFirst" }
+task4.doLast { println "task4 doLast" }
+
+task task5 {
+    description "Task 5 description"
+    doFirst {
+        println "task5 doFirst"
+    }
+    doFirst {
+        println "task5 another doFirst"
+    }
+    doLast {
+        println "task5 doLast"
+    }
+    doLast {
+        println "task5 another doLast"
+    }
+    dependsOn task1,task2,task3,task4
+}
+
+task task6 {
+    description "task6 for $customVariable version"
+    doFirst {
+        println "task6 custom veriable is $customVariable"
+        println "task6 current version is $project.ext.projectCustomFirst"
+    }
+    dependsOn task5
+}
+
+task task7 {
+    description "task7 for $customVariable version"
+    doFirst {
+        println "task7 custom veriable is $customVariable"
+        println "task7 current version is $project.ext.projectCustomFirst"
+    }
+    finalizedBy task6
+}
+
+def sourceSpec = copySpec {
+    from 'files/source'
+    include '**/*.txt'
+    exclude {it.file.name.startsWith("wrong")}
+    expand ([
+            mark: 'my custom text'
+    ])
+}
+
+task copySourceSpec(type: Copy) {
+    with sourceSpec
+    into 'files/public'
+}
+
+task packToZip(type: Zip) {
+    archiveFileName = "public.zip"
+    destinationDirectory = file("files/archive")
+
+    from "files/public"
+    exclude {it.file.name.contains("2")}
+
+    dependsOn copySourceSpec
+}

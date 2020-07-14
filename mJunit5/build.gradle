@@ -1,0 +1,30 @@
+import static java.util.Objects.nonNull
+
+def junitVersion = '5.6.2'
+
+String iTags = System.getProperty("includeTags")
+String eTags = System.getProperty("excludeTags")
+
+dependencies {
+    testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${junitVersion}"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
+}
+
+test {
+    useJUnitPlatform {
+        if (nonNull(iTags) && !iTags.isEmpty()) {
+            println iTags
+            includeTags iTags
+        }
+        if (nonNull(eTags) && !eTags.isEmpty()) {
+            println eTags
+            excludeTags eTags
+        }
+    }
+
+    filter {
+        includeTestsMatching "com.gjs.mJunit5.*Test"
+//        includeTestsMatching "com.gjs.mJunit5.*Test.shouldUse*"
+    }
+}

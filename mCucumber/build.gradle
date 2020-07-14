@@ -1,0 +1,63 @@
+import static java.util.Objects.isNull
+
+def cucumberVersion = '5.6.0'
+def vintageEngineVersion = '5.6.2'
+def hamcrestVersion = '2.2'
+
+dependencies {
+    testImplementation "io.cucumber:cucumber-java:$cucumberVersion"
+    testImplementation "io.cucumber:cucumber-junit:$cucumberVersion"
+    testRuntimeOnly "org.junit.vintage:junit-vintage-engine:${vintageEngineVersion}"
+    testImplementation "org.hamcrest:hamcrest:${hamcrestVersion}"
+}
+
+configurations {
+    cucumberRuntime {
+        extendsFrom testImplementation
+    }
+}
+
+task cucumber() {
+    dependsOn assemble, compileTestJava
+    doLast {
+        javaexec {
+            main = "io.cucumber.core.cli.Main"
+            classpath = configurations.cucumberRuntime + sourceSets.main.output + sourceSets.test.output
+            args = [
+                    '--plugin', 'pretty',
+                    '--plugin', 'html:build/cucumber/reports/html',
+                    '--plugin', 'json:build/cucumber/reports/report.json',
+                    '--plugin', 'junit:build/cucumber/reports/report.xml',
+                    '--glue', 'com.gjs.mCucumber.definitions',
+//                    '--glue', 'com.gjs.mCucumber.hooks',
+                    '--glue', 'com.gjs.mCucumber.datatypes',
+                    'src/test/resources',
+                    '--tags', getTags(),
+//                    '--tags', '@first',
+//                    '--tags', 'not @second',
+//                    '--tags', '@smoke and not @first',
+//                    '--tags', '@smoke and @long',
+//                    '--tags', '@first or @second',
+//                    '--tags', '(@first or @long) and (not @third)',
+//                    '--dry-run',
+
+
+            ]
+        }
+    }
+}
+
+test {
+    useJUnitPlatform()
+    scanForTestClasses = false
+    testLogging.showStandardStreams = true
+}
+
+static def getTags() {
+    String DEFAULT_TAG = 'not @notUsedTag'
+    String tags = System.getProperty('tags')
+    if (isNull(tags) || tags.isEmpty()) {
+        tags = DEFAULT_TAG
+    }
+    return tags
+}

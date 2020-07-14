@@ -1,0 +1,27 @@
+allprojects {
+
+    apply plugin: 'java'
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+subprojects {
+    apply plugin: 'maven'
+    group 'com.cdp'
+    version = '1.0-SNAPSHOT-submodule'
+
+    jar {
+        archivesBaseName = "custom-$project.name"
+    }
+}
+
+wrapper {
+    gradleVersion = '6.3'
+}
