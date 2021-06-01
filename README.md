@@ -57,8 +57,16 @@
     * Run tests using Junit
     
         `gradle mCucumber:test`
-     *Run by tag from cli
+    * Run by tag from cli
      
         `gradle mCucumber:cucumber -Dtags="@smoke and not @third"`
-    
-   
+
+6. mSelenide
+   * Run tests
+     `gradle clean mSelenide:test`
+     
+   * Download Allure for CLI
+     `./gradlew mSelenide:downlodAllure --info`
+     
+   * Generate reports
+     `./gradlew mSelenide:allureServe`

@@ -4,4 +4,5 @@ include 'mJunit5'
 include 'mCucumber'
 
 //startParameter.excludedTaskNames += ':mGradle:test'
+include 'mSelenide'
 
