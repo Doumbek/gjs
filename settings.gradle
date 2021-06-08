@@ -1,8 +1,11 @@
 rootProject.name = 'gjs'
-include 'mGradle'
-include 'mJunit5'
-include 'mCucumber'
+include ':mGradle'
+include ':mJunit5'
+include ':mCucumber'
 
 //startParameter.excludedTaskNames += ':mGradle:test'
-include 'mSelenide'
+include ':mSelenide'
+include ':mThread'
+include ':mPatterns'
+include ':mCore'
 
